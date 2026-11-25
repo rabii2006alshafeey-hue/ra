@@ -1,0 +1,2006 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أرشيف أيامنا الجميلة</title>
+
+    <!-- خط عربي أنيق (Amiri للعناوين و Cairo للنصوص) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- أيقونات Lucide -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Cairo', 'sans-serif'],
+                        serif: ['Amiri', 'serif'],
+                    },
+                    colors: {
+                        sand: {
+                            50: '#FAF7F2',
+                            100: '#F2ECE1',
+                            200: '#E5DFD3',
+                            300: '#D3C9B8',
+                        },
+                        forest: {
+                            50: '#EEF3F0',
+                            100: '#D5E2DA',
+                            700: '#274E3B',
+                            800: '#1F4131',
+                            900: '#1B382A',
+                        },
+                        terracotta: {
+                            50: '#FDF3EE',
+                            100: '#F9E1D5',
+                            200: '#F1C1AA',
+                            600: '#C8643B',
+                            700: '#A94F2B',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #FAF7F2;
+            color: #1B382A;
+            overflow-x: hidden;
+        }
+
+        .section-nav-pill.active {
+            background-color: #1B382A;
+            color: #FFFFFF;
+            border-color: #1B382A;
+        }
+
+        .chapter-drawer-item.active {
+            background-color: #1B382A;
+            color: #FFFFFF;
+            border-color: #1B382A;
+        }
+
+        .chapter-drawer-item.active .chapter-badge {
+            background-color: rgba(255, 255, 255, 0.16);
+            color: #FFFFFF;
+        }
+
+        .archive-card {
+            background-color: #FFFFFF;
+            border: 1px solid #E5DFD3;
+            border-radius: 1.25rem;
+            box-shadow: 0 8px 24px -12px rgba(27, 56, 42, 0.14);
+        }
+
+        .emoji-option.active {
+            background-color: #1B382A;
+            color: #FFFFFF;
+            border-color: #1B382A;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #F2ECE1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #C8BFA8;
+            border-radius: 9999px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #274E3B;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans antialiased">
+
+    <!-- شريط التنقل العلوي -->
+    <header class="sticky top-0 z-30 bg-sand-50/95 backdrop-blur-md border-b border-sand-200">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-2.5 min-w-0">
+                <div class="w-9 h-9 rounded-xl bg-forest-900 text-sand-50 flex items-center justify-center shrink-0">
+                    <i data-lucide="book-heart" class="w-5 h-5 text-terracotta-200"></i>
+                </div>
+                <span id="header-brand-name" class="font-serif text-lg sm:text-xl font-bold text-forest-900 truncate">
+                    أرشيف أيامنا
+                </span>
+            </div>
+
+            <!-- روابط تنقل سريعة بين الأقسام -->
+            <nav class="hidden md:flex items-center gap-1.5">
+                <button type="button" onclick="selectChapter('memories')" data-nav="memories" class="section-nav-pill active px-3.5 py-1.5 rounded-full border border-sand-200 text-xs font-bold transition">ذكرياتنا</button>
+                <button type="button" onclick="selectChapter('home')" data-nav="home" class="section-nav-pill px-3.5 py-1.5 rounded-full border border-sand-200 text-xs font-bold text-forest-900 hover:bg-sand-100 transition">منزلنا</button>
+                <button type="button" onclick="selectChapter('secrets')" data-nav="secrets" class="section-nav-pill px-3.5 py-1.5 rounded-full border border-sand-200 text-xs font-bold text-forest-900 hover:bg-sand-100 transition">كلمات سر</button>
+                <button type="button" onclick="selectChapter('watched')" data-nav="watched" class="section-nav-pill px-3.5 py-1.5 rounded-full border border-sand-200 text-xs font-bold text-forest-900 hover:bg-sand-100 transition">مشاهداتنا</button>
+                <button type="button" onclick="selectChapter('ideas')" data-nav="ideas" class="section-nav-pill px-3.5 py-1.5 rounded-full border border-sand-200 text-xs font-bold text-forest-900 hover:bg-sand-100 transition">أفكارنا</button>
+            </nav>
+
+            <div class="flex items-center gap-2 shrink-0">
+                <button type="button" onclick="openChaptersDrawer()" class="lg:hidden inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-forest-700 hover:bg-forest-800 text-white text-xs font-bold transition">
+                    <i data-lucide="panel-right" class="w-4 h-4"></i>
+                    <span>الفصول</span>
+                </button>
+                <button type="button" onclick="openSettingsModal()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-sand-100 hover:bg-sand-200 text-forest-900 text-xs sm:text-sm font-bold border border-sand-200 transition">
+                    <i data-lucide="sliders-horizontal" class="w-4 h-4 text-terracotta-600"></i>
+                    <span>تخصيص</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- طبقة التعتيم وقائمة الفصول الجانبية للموبايل -->
+    <div id="chapters-backdrop" onclick="closeChaptersDrawer()" class="fixed inset-0 z-40 hidden bg-forest-900/40 backdrop-blur-sm lg:hidden"></div>
+
+    <!-- شريط إشعارات لطيف -->
+    <div id="toast-banner" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 hidden px-4 py-2.5 rounded-xl bg-forest-900 text-white text-xs sm:text-sm font-bold shadow-lg">
+        <span id="toast-message"></span>
+    </div>
+
+    <!-- المحتوى الرئيسي -->
+    <main class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-10">
+
+        <!-- 1. بطاقة العداد الزمني والترحيب -->
+        <section class="archive-card p-6 sm:p-10 bg-gradient-to-br from-white via-sand-50 to-forest-100/40">
+            <div class="text-center max-w-2xl mx-auto space-y-6">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-forest-100 text-forest-800 text-xs font-bold">
+                    <i data-lucide="heart" class="w-3.5 h-3.5 text-terracotta-600"></i>
+                    <span id="hero-badge-text">معاً منذ البداية</span>
+                </div>
+
+                <h1 id="hero-title" class="font-serif text-3xl sm:text-5xl font-bold text-forest-900 leading-tight">
+                    أرشيف أيامنا الجميلة
+                </h1>
+
+                <p id="hero-subtitle" class="text-sm sm:text-base text-forest-800/80">
+                    كل لحظة عشناها، وكل تفصيل نبنيه معاً محفوظ في مكان واحد دافئ.
+                </p>
+
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 pt-2">
+                    <div class="bg-sand-50 rounded-2xl p-4 border border-sand-200">
+                        <div id="timer-days" class="font-serif text-3xl sm:text-4xl font-bold text-forest-900">0</div>
+                        <div class="text-xs font-bold text-forest-700 mt-1">يوم</div>
+                    </div>
+                    <div class="bg-sand-50 rounded-2xl p-4 border border-sand-200">
+                        <div id="timer-hours" class="font-serif text-3xl sm:text-4xl font-bold text-forest-900">00</div>
+                        <div class="text-xs font-bold text-forest-700 mt-1">ساعة</div>
+                    </div>
+                    <div class="bg-sand-50 rounded-2xl p-4 border border-sand-200">
+                        <div id="timer-minutes" class="font-serif text-3xl sm:text-4xl font-bold text-forest-900">00</div>
+                        <div class="text-xs font-bold text-forest-700 mt-1">دقيقة</div>
+                    </div>
+                    <div class="bg-terracotta-100/70 rounded-2xl p-4 border border-terracotta-200">
+                        <div id="timer-seconds" class="font-serif text-3xl sm:text-4xl font-bold text-terracotta-700">00</div>
+                        <div class="text-xs font-bold text-terracotta-700 mt-1">ثانية</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- مساحة الفصول مع القائمة الجانبية -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+            <!-- القائمة الجانبية للفصول -->
+            <aside id="chapters-sidebar" class="fixed lg:sticky top-0 lg:top-20 right-0 z-50 lg:z-10 h-full lg:h-auto w-72 lg:w-auto lg:col-span-3 translate-x-full lg:translate-x-0 transition-transform duration-300 bg-sand-50 lg:bg-transparent border-l lg:border-0 border-sand-200 p-4 lg:p-0 overflow-y-auto">
+                <div class="archive-card p-4 space-y-2">
+                    <div class="flex items-center justify-between pb-2.5 mb-1 border-b border-sand-200">
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="library" class="w-4 h-4 text-forest-700"></i>
+                            <h2 class="font-serif text-lg font-bold text-forest-900">فصول أرشيفنا</h2>
+                        </div>
+                        <button type="button" onclick="closeChaptersDrawer()" class="lg:hidden p-1 text-forest-700 hover:bg-sand-100 rounded-lg transition">
+                            <i data-lucide="x" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+
+                    <button type="button" onclick="selectChapter('memories')" data-chapter-btn="memories" class="chapter-drawer-item active w-full flex items-center justify-between gap-2 px-3.5 py-2.5 rounded-xl border border-sand-200 bg-white text-forest-900 text-xs sm:text-sm font-bold transition">
+                        <span class="flex items-center gap-2">
+                            <i data-lucide="sparkles" class="w-4 h-4 text-terracotta-600"></i>
+                            <span>ذكرياتنا</span>
+                        </span>
+                        <span id="sidebar-count-memories" class="chapter-badge text-[11px] bg-sand-100 text-forest-800 px-2 py-0.5 rounded-full">0</span>
+                    </button>
+
+                    <button type="button" onclick="selectChapter('home')" data-chapter-btn="home" class="chapter-drawer-item w-full flex items-center justify-between gap-2 px-3.5 py-2.5 rounded-xl border border-sand-200 bg-white text-forest-900 text-xs sm:text-sm font-bold transition">
+                        <span class="flex items-center gap-2">
+                            <i data-lucide="home" class="w-4 h-4 text-terracotta-600"></i>
+                            <span>منزلنا</span>
+                        </span>
+                        <span id="sidebar-count-home" class="chapter-badge text-[11px] bg-sand-100 text-forest-800 px-2 py-0.5 rounded-full">0</span>
+                    </button>
+
+                    <button type="button" onclick="selectChapter('secrets')" data-chapter-btn="secrets" class="chapter-drawer-item w-full flex items-center justify-between gap-2 px-3.5 py-2.5 rounded-xl border border-sand-200 bg-white text-forest-900 text-xs sm:text-sm font-bold transition">
+                        <span class="flex items-center gap-2">
+                            <i data-lucide="key-round" class="w-4 h-4 text-terracotta-600"></i>
+                            <span>كلمات سر</span>
+                        </span>
+                        <span id="sidebar-count-secrets" class="chapter-badge text-[11px] bg-sand-100 text-forest-800 px-2 py-0.5 rounded-full">0</span>
+                    </button>
+
+                    <button type="button" onclick="selectChapter('watched')" data-chapter-btn="watched" class="chapter-drawer-item w-full flex items-center justify-between gap-2 px-3.5 py-2.5 rounded-xl border border-sand-200 bg-white text-forest-900 text-xs sm:text-sm font-bold transition">
+                        <span class="flex items-center gap-2">
+                            <i data-lucide="clapperboard" class="w-4 h-4 text-terracotta-600"></i>
+                            <span>مشاهداتنا</span>
+                        </span>
+                        <span id="sidebar-count-watched" class="chapter-badge text-[11px] bg-sand-100 text-forest-800 px-2 py-0.5 rounded-full">0</span>
+                    </button>
+
+                    <button type="button" onclick="selectChapter('ideas')" data-chapter-btn="ideas" class="chapter-drawer-item w-full flex items-center justify-between gap-2 px-3.5 py-2.5 rounded-xl border border-sand-200 bg-white text-forest-900 text-xs sm:text-sm font-bold transition">
+                        <span class="flex items-center gap-2">
+                            <i data-lucide="lightbulb" class="w-4 h-4 text-terracotta-600"></i>
+                            <span>أفكارنا</span>
+                        </span>
+                        <span id="sidebar-count-ideas" class="chapter-badge text-[11px] bg-sand-100 text-forest-800 px-2 py-0.5 rounded-full">0</span>
+                    </button>
+                </div>
+            </aside>
+
+            <!-- حاوية عرض الفصل النشط -->
+            <div class="lg:col-span-9 space-y-8">
+
+                <!-- 2. قسم ذكرياتنا -->
+                <section id="sec-memories" data-chapter-panel="memories" class="space-y-6 scroll-mt-20">
+                    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-sand-200 pb-3">
+                        <div class="flex items-center gap-2.5">
+                            <i data-lucide="sparkles" class="w-5 h-5 text-terracotta-600"></i>
+                            <h2 class="font-serif text-2xl sm:text-3xl font-bold text-forest-900">ذكرياتنا</h2>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span id="count-memories" class="text-xs font-bold bg-sand-100 text-forest-800 px-3 py-1 rounded-full">0 ذكرى</span>
+                            <button type="button" onclick="openUnifiedAddModal('memories')" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-forest-900 hover:bg-forest-800 text-white text-xs font-bold transition">
+                                <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                                <span>إضافة</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="memories-grid" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>
+                </section>
+
+                <!-- 3. قسم منزلنا -->
+                <section id="sec-home" data-chapter-panel="home" class="hidden space-y-6 scroll-mt-20">
+                    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-sand-200 pb-3">
+                        <div class="flex items-center gap-2.5">
+                            <i data-lucide="home" class="w-5 h-5 text-terracotta-600"></i>
+                            <h2 class="font-serif text-2xl sm:text-3xl font-bold text-forest-900">منزلنا</h2>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span id="count-home" class="text-xs font-bold bg-sand-100 text-forest-800 px-3 py-1 rounded-full">0 ركن</span>
+                            <button type="button" onclick="openUnifiedAddModal('home')" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-forest-900 hover:bg-forest-800 text-white text-xs font-bold transition">
+                                <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                                <span>إضافة</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="home-list" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>
+                </section>
+
+                <!-- 4. قسم كلمات السر -->
+                <section id="sec-secrets" data-chapter-panel="secrets" class="hidden space-y-6 scroll-mt-20">
+                    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-sand-200 pb-3">
+                        <div class="flex items-center gap-2.5">
+                            <i data-lucide="key-round" class="w-5 h-5 text-terracotta-600"></i>
+                            <h2 class="font-serif text-2xl sm:text-3xl font-bold text-forest-900">كلمات سر</h2>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span id="count-secrets" class="text-xs font-bold bg-sand-100 text-forest-800 px-3 py-1 rounded-full">0 رمز</span>
+                            <button type="button" onclick="openUnifiedAddModal('secrets')" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-forest-900 hover:bg-forest-800 text-white text-xs font-bold transition">
+                                <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                                <span>إضافة</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="secrets-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                </section>
+
+                <!-- 5. قسم مشاهداتنا -->
+                <section id="sec-watched" data-chapter-panel="watched" class="hidden space-y-6 scroll-mt-20">
+                    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-sand-200 pb-3">
+                        <div class="flex items-center gap-2.5">
+                            <i data-lucide="clapperboard" class="w-5 h-5 text-terracotta-600"></i>
+                            <h2 class="font-serif text-2xl sm:text-3xl font-bold text-forest-900">مشاهداتنا</h2>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span id="count-watched" class="text-xs font-bold bg-sand-100 text-forest-800 px-3 py-1 rounded-full">0 عمل</span>
+                            <button type="button" onclick="openUnifiedAddModal('watched')" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-forest-900 hover:bg-forest-800 text-white text-xs font-bold transition">
+                                <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                                <span>إضافة</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="watched-list" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>
+                </section>
+
+                <!-- 6. قسم أفكارنا -->
+                <section id="sec-ideas" data-chapter-panel="ideas" class="hidden space-y-6 scroll-mt-20">
+                    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-sand-200 pb-3">
+                        <div class="flex items-center gap-2.5">
+                            <i data-lucide="lightbulb" class="w-5 h-5 text-terracotta-600"></i>
+                            <h2 class="font-serif text-2xl sm:text-3xl font-bold text-forest-900">أفكارنا</h2>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span id="count-ideas" class="text-xs font-bold bg-sand-100 text-forest-800 px-3 py-1 rounded-full">0 فكرة</span>
+                            <button type="button" onclick="openUnifiedAddModal('ideas')" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-forest-900 hover:bg-forest-800 text-white text-xs font-bold transition">
+                                <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                                <span>إضافة</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="ideas-list" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>
+                </section>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- تذييل الصفحة -->
+    <footer class="border-t border-sand-200 bg-sand-100/70 py-6 mt-12">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-forest-800">
+            <p id="sync-status-footer">يتم مزامنة الذكريات والأركان والرموز والمشاهدات والأفكار لحظياً بين أجهزتكما.</p>
+            <p class="font-bold text-forest-900">صُنع بمحبة وهدوء</p>
+        </div>
+    </footer>
+
+    <!-- نافذة الإضافة والتعديل الموحدة -->
+    <div id="unified-add-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-forest-900/50 backdrop-blur-xs p-4">
+        <div class="archive-card w-full max-w-xl p-6 space-y-5 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b border-sand-200 pb-3">
+                <h3 id="unified-modal-title" class="font-serif text-2xl font-bold text-forest-900">إضافة عنصر جديد</h3>
+                <button type="button" onclick="closeUnifiedAddModal()" class="p-1.5 rounded-lg text-forest-800 hover:bg-sand-100">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <div>
+                <label for="unified-category-select" class="block text-xs font-bold text-forest-900 mb-1.5">اختر القسم</label>
+                <select id="unified-category-select" onchange="switchUnifiedModalCategory(this.value)" class="w-full px-3.5 py-2.5 rounded-xl border border-sand-300 bg-sand-50 text-sm font-bold text-forest-900 focus:outline-none focus:border-forest-700">
+                    <option value="memories">ذكرياتنا</option>
+                    <option value="home">منزلنا</option>
+                    <option value="secrets">كلمات سر</option>
+                    <option value="watched">مشاهداتنا</option>
+                    <option value="ideas">أفكارنا</option>
+                </select>
+            </div>
+
+            <!-- نموذج الذكريات -->
+            <form id="memory-form" onsubmit="handleMemorySubmit(event)" class="space-y-4">
+                <input type="hidden" id="memory-edit-id">
+                <div class="flex items-center justify-between">
+                    <h4 id="memory-form-title" class="font-serif text-lg font-bold text-forest-900">إضافة ذكرى جديدة</h4>
+                    <button type="button" id="cancel-memory-edit-btn" onclick="resetMemoryForm()" class="hidden text-xs font-bold text-terracotta-600 hover:underline">إلغاء التعديل</button>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="memory-title" class="block text-xs font-bold text-forest-900 mb-1.5">عنوان الذكرى *</label>
+                        <input type="text" id="memory-title" required placeholder="مثال: أول رحلة بحرية معاً" class="w-full px-3.5 py-2.5 rounded-xl border border-sand-300 bg-sand-50 text-sm focus:outline-none focus:border-forest-700">
+                    </div>
+                    <div>
+                        <label for="memory-date" class="block text-xs font-bold text-forest-900 mb-1.5">التاريخ *</label>
+                        <input type="date" id="memory-date" required class="w-full px-3.5 py-2.5 rounded-xl border border-sand-300 bg-sand-50 text-sm focus:outline-none focus:border-forest-700">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-forest-900 mb-1.5">شعور اللحظة</label>
+                    <div id="emoji-selector-container" class="flex flex-wrap gap-2"></div>
+                    <input type="hidden" id="memory-emoji" value="❤️">
+                </div>
+
+                <div>
+                    <label for="memory-desc" class="block text-xs font-bold text-forest-900 mb-1.5">تفاصيل الذكرى *</label>
+                    <textarea id="memory-desc" rows="3" required placeholder="اكتب ما حدث وكيف شعرتما في تلك اللحظة..." class="w-full px-3.5 py-2.5 rounded-xl border border-sand-300 bg-sand-50 text-sm focus:outline-none focus:border-forest-700"></textarea>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-start">
+                    <div>
+                        <label for="memory-image-file" class="block text-xs font-bold text-forest-900 mb-1.5">صورة من الجهاز</label>
+                        <input type="file" id="memory-image-file" accept="image/*" onchange="handleImageFileUpload(event, 'memory')" class="w-full text-xs text-forest-800 file:ml-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-forest-100 file:text-forest-900 hover:file:bg-forest-200">
+                    </div>
+                    <div>
+                        <label for="memory-image-url" class="block text-xs font-bold text-forest-900 mb-1.5">أو رابط صورة</label>
+                        <input type="url" id="memory-image-url" oninput="handleImageUrlInput(event, 'memory')" placeholder="https://example.com/photo.jpg" class="w-full px-3.5 py-2.5 rounded-xl border border-sand-300 bg-sand-50 text-sm focus:outline-none focus:border-forest-700">
+                    </div>
+                </div>
+
+                <div id="memory-image-preview-box" class="hidden relative w-fit">
+                    <img id="memory-image-preview" src="" alt="معاينة الذكرى" class="w-36 h-24 object-cover rounded-xl border border-sand-200" onerror="this.src='https://placehold.co/300x200/F2ECE1/1B382A?text=صورة'">
+                    <button type="button" onclick="clearEntityImageSelection('memory')" class="absolute -top-2 -left-2 w-6 h-6 rounded-full bg-terracotta-600 text-white flex items-center justify-center shadow">
+                        <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                    </button>
+                </div>
+
+                <div class="pt-1 flex items-center justify-end gap-2">
+                    <button type="button" onclick="closeUnifiedAddModal()" class="px-4 py-2.5 rounded-xl bg-sand-100 text-forest-900 text-xs font-bold">إغلاق</button>
+                    <button type="submit" id="memory-submit-btn" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-forest-900 hover:bg-forest-800 text-white text-sm font-bold transition">
+                        <i data-lucide="plus" class="w-4 h-4"></i>
+                        <span>حفظ الذكرى</span>
+                    </button>
+                </div>
+            </form>
+
+            <!-- نموذج منزلنا -->
+            <form id="home-form" onsubmit="handleHomeSubmit(event)" class="hidden space-y-4">
+                <input type="hidden" id="home-edit-id">
+                <div class="flex items-center justify-between">
+                    <h4 id="home-form-title" class="font-serif text-lg font-bold text-forest-900">إضافة ركن أو فكرة للمنزل</h4>
+                    <button type="button" id="cancel-home-edit-btn" onclick="resetHomeForm()" class="hidden text-xs font-bold text-terracotta-600 hover:underline">إلغاء التعديل</button>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="home-title" class="block text-xs font-bold text-forest-900 mb-1.5">اسم الركن أو الفكرة *</label>
+                        <input type="text" id="home-title" required placeholder="مثال: ركن القهوة الصباحية قرب النافذة" class="w-full px-3.5 py-2.5 rounded-xl border border-sand-300 bg-sand-50 text-sm focus:outline-none focus:border-forest-700">
+                    </div>
+                    <div>
+                        <label for="home-category" class="block text-xs font-bold text-forest-900 mb-1.5">التصنيف</label>
+                        <select id="home-category" class="w-full px-3.5 py-2.5 rounded-xl border border-sand-300 bg-sand-50 text-sm focus:outline-none focus:border-forest-700">
+                            <option value="غرفة المعيشة">غرفة المعيشة</option>
+                            <option value="المطبخ والقهوة">المطبخ والقهوة</option>
+                            <option value="غرفة النوم">غرفة النوم</option>
+                            <option value="الشرفة والحديقة">الشرفة والحديقة</option>
+                            <option value="أفكار وديكور">أفكار وديكور</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label for="home-desc" class="block text-xs font-bold text-forest-900 mb-1.5">الوصف والتفاصيل *</label>
+                    <textarea id="home-desc" rows="3" required placeholder="اكتب تفاصيل الألوان، الإضاءة، أو الأثاث الذي تحلمان به..." class="w-full px-3.5 py-2.5 rounded-xl border border-sand-300 bg-sand-50 text-sm focus:outline-none focus:border-forest-700"></textarea>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-start">
+                    <div>
+                        <label for="home-image-file" class="block text-xs font-bold text-forest-900 mb-1.5">صورة من الجهاز</label>
+                        <input type="file" id="home-image-file" accept="image/*" onchange="handleImageFileUpload(event, 'home')" class="w-full text-xs text-forest-800 file:ml-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-forest-100 file:text-forest-900 hover:file:bg-forest-200">
+                    </div>
+                    <div>
+                        <label for="home-image-url" class="block text-xs font-bold text-forest-900 mb-1.5">أو رابط صورة</label>
+                        <input type="url" id="home-image-url" oninput="handleImageUrlInput(event, 'home')" placeholder="https://example.com/room.jpg" class="w-full px-3.5 py-2.5 rounded-xl border border-sand-300 bg-sand-50 text-sm focus:outline-none focus:border-forest-700">
+                    </div>
+                </div>
+
+                <div id="home-image-preview-box" class="hidden relative w-fit">
+                    <img id="home-image-preview" src="" alt="معاينة المنزل" class="w-36 h-24 object-cover rounded-xl border border-sand-200" onerror="this.src='https://placehold.co/300x200/F2ECE1/1B382A?text=منزلنا'">
+                    <button type="button" onclick="clearEntityImageSelection('home')" class="absolute -top-2 -left-2 w-6 h-6 rounded-full bg-terracotta-600 text-white flex items-center justify-center shadow">
+                        <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                    </button>
+                </div>
+
+                <div class="pt-1 flex items-center justify-end gap-2">
+                    <button type="button" onclick="closeUnifiedAddModal()" class="px-4 py-2.5 rounded-xl bg-sand-100 text-forest-900 text-xs font-bold">إغلاق</button>
+                    <button type="submit" id="home-submit-btn" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-forest-900 hover:bg-forest-800 text-white text-sm font-bold transition">
+                        <i data-lucide="plus" class="w-4 h-4"></i>
+                        <span>حفظ في منزلنا</span>
+                    </button>
+                </div>
+            </form>
+
+            <!-- نموذج كلمات السر -->
+            <form id="secret-form" onsubmit="handleSecretSubmit(event)" class="hidden space-y-4">
+                <input type="hidden" id="secret-edit-id">
+                <div class="flex items-center justify-between">
+                    <h4 id="secret-form-title" class="font-serif text-lg font-bold text-forest-900">إضافة كلمة سر أو رمز مشترك</h4>
+                    <button type="button" id="cancel-secret-edit-btn" onclick="resetSecretForm()" class="hidden text-xs font-bold text-terracotta-600 hover:underline">إلغاء التعديل</button>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="secret-label" class="block text-xs font-bold text-forest-900 mb-1.5">عنوان الرمز أو الحساب *</label>
+                        <input type="text" id="secret-label" required placeholder="مثال: رمز قفل الباب الذكي أو واي فاي المنزل" class="w-full px-3.5 py-2.5 rounded-xl border border-sand-300 bg-sand-50 text-sm focus:outline-none focus:border-forest-700">
+                    </div>
+                    <div>
+                        <label for="secret-value" class="block text-xs font-bold text-forest-900 mb-1.5">كلمة السر / الرمز *</label>
+                        <input type="text" id="secret-value" required placeholder="أدخل الرمز أو الكلمة" class="w-full px-3.5 py-2.5 rounded-xl border border-sand-300 bg-sand-50 text-sm focus:outline-none focus:border-forest-700">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="secret-note" class="block text-xs font-bold text-forest-900 mb-1.5">ملاحظة إضافية</label>
+                    <input type="text" id="secret-note" placeholder="مثال: تاريخ مميز يجمعنا" class="w-full px-3.5 py-2.5 rounded-xl border border-sand-300 bg-sand-50 text-sm focus:outline-none focus:border-forest-700">
+                </div>
+
+                <div class="pt-1 flex items-center justify-end gap-2">
+                    <button type="button" onclick="closeUnifiedAddModal()" class="px-4 py-2.5 rounded-xl bg-sand-100 text-forest-900 text-xs font-bold">إغلاق</button>
+                    <button type="submit" id="secret-submit-btn" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-forest-900 hover:bg-forest-800 text-white text-sm font-bold transition">
+                        <i data-lucide="plus" class="w-4 h-4"></i>
+                        <span>حفظ كلمة السر</span>
+                    </button>
+                </div>
+            </form>
+
+            <!-- نموذج مشاهداتنا -->
+            <form id="watched-form" onsubmit="handleWatchedSubmit(event)" class="hidden space-y-4">
+                <input type="hidden" id="watched-edit-id">
+                <div class="flex items-center justify-between">
+                    <h4 id="watched-form-title" class="font-serif text-lg font-bold text-forest-900">إضافة فيلم أو مسلسل شاهدناه</h4>
+                    <button type="button" id="cancel-watched-edit-btn" onclick="resetWatchedForm()" class="hidden text-xs font-bold text-terracotta-600 hover:underline">إلغاء التعديل</button>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label for="watched-title" class="block text-xs font-bold text-forest-900 mb-1.5">اسم الفيلم أو المسلسل *</label>
+                        <input type="text" id="watched-title" required placeholder="مثال: ليالي دافئة" class="w-full px-3.5 py-2.5 rounded-xl border border-sand-300 bg-sand-50 text-sm focus:outline-none focus:border-forest-700">
+                    </div>
+                    <div>
+                        <label for="watched-type" class="block text-xs font-bold text-forest-900 mb-1.5">النوع</label>
+                        <select id="watched-type" class="w-full px-3.5 py-2.5 rounded-xl border border-sand-300 bg-sand-50 text-sm focus:outline-none focus:border-forest-700">
+                            <option value="فيلم">فيلم</option>
+                            <option value="مسلسل">مسلسل</option>
+                            <option value="وثائقي">وثائقي</option>
+                            <option value="أنمي / رسوم">أنمي / رسوم</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="watched-rating" class="block text-xs font-bold text-forest-900 mb-1.5">تقييمنا (من 5)</label>
+                        <select id="watched-rating" class="w-full px-3.5 py-2.5 rounded-xl border border-sand-300 bg-sand-50 text-sm focus:outline-none focus:border-forest-700">
+                            <option value="5">5 / 5 — رائع جداً</option>
+                            <option value="4">4 / 5 — جميل جداً</option>
+                            <option value="3">3 / 5 — لطيف</option>
+                            <option value="2">2 / 5 — مقبول</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label for="watched-review" class="block text-xs font-bold text-forest-900 mb-1.5">انطباعنا عن العمل *</label>
+                    <textarea id="watched-review" rows="2" required placeholder="أكثر مشهد أعجبنا أو ما الذي ميز سهرتنا..." class="w-full px-3.5 py-2.5 rounded-xl border border-sand-300 bg-sand-50 text-sm focus:outline-none focus:border-forest-700"></textarea>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-start">
+                    <div>
+                        <label for="watched-image-file" class="block text-xs font-bold text-forest-900 mb-1.5">صورة من الجهاز</label>
+                        <input type="file" id="watched-image-file" accept="image/*" onchange="handleImageFileUpload(event, 'watched')" class="w-full text-xs text-forest-800 file:ml-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-forest-100 file:text-forest-900 hover:file:bg-forest-200">
+                    </div>
+                    <div>
+                        <label for="watched-image-url" class="block text-xs font-bold text-forest-900 mb-1.5">أو رابط صورة</label>
+                        <input type="url" id="watched-image-url" oninput="handleImageUrlInput(event, 'watched')" placeholder="https://example.com/poster.jpg" class="w-full px-3.5 py-2.5 rounded-xl border border-sand-300 bg-sand-50 text-sm focus:outline-none focus:border-forest-700">
+                    </div>
+                </div>
+
+                <div id="watched-image-preview-box" class="hidden relative w-fit">
+                    <img id="watched-image-preview" src="" alt="معاينة المشاهدة" class="w-36 h-24 object-cover rounded-xl border border-sand-200" onerror="this.src='https://placehold.co/300x200/F2ECE1/1B382A?text=مشاهداتنا'">
+                    <button type="button" onclick="clearEntityImageSelection('watched')" class="absolute -top-2 -left-2 w-6 h-6 rounded-full bg-terracotta-600 text-white flex items-center justify-center shadow">
+                        <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                    </button>
+                </div>
+
+                <div class="pt-1 flex items-center justify-end gap-2">
+                    <button type="button" onclick="closeUnifiedAddModal()" class="px-4 py-2.5 rounded-xl bg-sand-100 text-forest-900 text-xs font-bold">إغلاق</button>
+                    <button type="submit" id="watched-submit-btn" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-forest-900 hover:bg-forest-800 text-white text-sm font-bold transition">
+                        <i data-lucide="plus" class="w-4 h-4"></i>
+                        <span>حفظ المشاهدة</span>
+                    </button>
+                </div>
+            </form>
+
+            <!-- نموذج أفكارنا -->
+            <form id="idea-form" onsubmit="handleIdeaSubmit(event)" class="hidden space-y-4">
+                <input type="hidden" id="idea-edit-id">
+                <div class="flex items-center justify-between">
+                    <h4 id="idea-form-title" class="font-serif text-lg font-bold text-forest-900">إضافة فكرة جديدة</h4>
+                    <button type="button" id="cancel-idea-edit-btn" onclick="resetIdeaForm()" class="hidden text-xs font-bold text-terracotta-600 hover:underline">إلغاء التعديل</button>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="idea-title" class="block text-xs font-bold text-forest-900 mb-1.5">عنوان الفكرة *</label>
+                        <input type="text" id="idea-title" required placeholder="مثال: رحلة تخييم في نهاية الأسبوع" class="w-full px-3.5 py-2.5 rounded-xl border border-sand-300 bg-sand-50 text-sm focus:outline-none focus:border-forest-700">
+                    </div>
+                    <div>
+                        <label for="idea-status" class="block text-xs font-bold text-forest-900 mb-1.5">الحالة</label>
+                        <select id="idea-status" class="w-full px-3.5 py-2.5 rounded-xl border border-sand-300 bg-sand-50 text-sm focus:outline-none focus:border-forest-700">
+                            <option value="قيد التخطيط">قيد التخطيط</option>
+                            <option value="للمستقبل القريب">للمستقبل القريب</option>
+                            <option value="تم تنفيذها">تم تنفيذها</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label for="idea-desc" class="block text-xs font-bold text-forest-900 mb-1.5">تفاصيل الفكرة *</label>
+                    <textarea id="idea-desc" rows="3" required placeholder="اكتب تفاصيل الفكرة أو الخطوات المقترحة..." class="w-full px-3.5 py-2.5 rounded-xl border border-sand-300 bg-sand-50 text-sm focus:outline-none focus:border-forest-700"></textarea>
+                </div>
+
+                <div class="pt-1 flex items-center justify-end gap-2">
+                    <button type="button" onclick="closeUnifiedAddModal()" class="px-4 py-2.5 rounded-xl bg-sand-100 text-forest-900 text-xs font-bold">إغلاق</button>
+                    <button type="submit" id="idea-submit-btn" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-forest-900 hover:bg-forest-800 text-white text-sm font-bold transition">
+                        <i data-lucide="plus" class="w-4 h-4"></i>
+                        <span>حفظ الفكرة</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- نافذة التخصيص والمزامنة السحابية -->
+    <div id="settings-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-forest-900/50 backdrop-blur-xs p-4">
+        <div class="archive-card w-full max-w-xl p-6 space-y-5 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b border-sand-200 pb-3">
+                <div class="flex items-center gap-2">
+                    <h3 class="font-serif text-2xl font-bold text-forest-900">تخصيص الأرشيف والسحابة</h3>
+                    <span id="cloud-connection-badge" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-sand-200 text-forest-900">وضع محلي</span>
+                </div>
+                <button type="button" onclick="closeSettingsModal()" class="p-1.5 rounded-lg text-forest-800 hover:bg-sand-100">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <form id="settings-form" onsubmit="saveSettings(event)" class="space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="setting-brand-name" class="block text-xs font-bold text-forest-900 mb-1.5">اسم الموقع في الشريط العلوي</label>
+                        <input type="text" id="setting-brand-name" class="w-full px-3.5 py-2.5 rounded-xl border border-sand-300 bg-sand-50 text-sm focus:outline-none focus:border-forest-700">
+                    </div>
+                    <div>
+                        <label for="setting-hero-badge" class="block text-xs font-bold text-forest-900 mb-1.5">شارة العداد</label>
+                        <input type="text" id="setting-hero-badge" class="w-full px-3.5 py-2.5 rounded-xl border border-sand-300 bg-sand-50 text-sm focus:outline-none focus:border-forest-700">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="setting-hero-title" class="block text-xs font-bold text-forest-900 mb-1.5">العنوان الرئيسي</label>
+                    <input type="text" id="setting-hero-title" class="w-full px-3.5 py-2.5 rounded-xl border border-sand-300 bg-sand-50 text-sm focus:outline-none focus:border-forest-700">
+                </div>
+
+                <div>
+                    <label for="setting-hero-subtitle" class="block text-xs font-bold text-forest-900 mb-1.5">الوصف الترحيبي</label>
+                    <textarea id="setting-hero-subtitle" rows="2" class="w-full px-3.5 py-2.5 rounded-xl border border-sand-300 bg-sand-50 text-sm focus:outline-none focus:border-forest-700"></textarea>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="setting-start-date" class="block text-xs font-bold text-forest-900 mb-1.5">تاريخ البداية للعداد الزمني</label>
+                        <input type="datetime-local" id="setting-start-date" class="w-full px-3.5 py-2.5 rounded-xl border border-sand-300 bg-sand-50 text-sm focus:outline-none focus:border-forest-700">
+                    </div>
+                    <div>
+                        <label for="setting-sync-room" class="block text-xs font-bold text-forest-900 mb-1.5">رمز الغرفة المشتركة</label>
+                        <div class="flex items-center gap-1.5">
+                            <input type="text" id="setting-sync-room" placeholder="our-shared-archive" class="flex-1 px-3.5 py-2.5 rounded-xl border border-sand-300 bg-sand-50 text-sm focus:outline-none focus:border-forest-700">
+                            <button type="button" onclick="copySyncRoomCode()" class="px-3 py-2.5 rounded-xl bg-sand-100 hover:bg-sand-200 text-forest-900 text-xs font-bold border border-sand-200">نسخ</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-3.5 rounded-2xl bg-sand-50 border border-sand-200 space-y-2">
+                    <div class="flex items-center justify-between gap-2">
+                        <label for="setting-cloud-config" class="block text-xs font-bold text-forest-900">إعدادات المشروع السحابي (Firebase JSON)</label>
+                        <button type="button" onclick="copyCloudConfigText()" class="text-[11px] font-bold text-terracotta-700 hover:underline">نسخ الإعدادات</button>
+                    </div>
+                    <textarea id="setting-cloud-config" rows="3" placeholder='{"apiKey":"...","authDomain":"...","projectId":"...","appId":"..."}' class="w-full px-3 py-2 rounded-xl border border-sand-300 bg-white text-xs font-mono focus:outline-none focus:border-forest-700"></textarea>
+                    <p class="text-[11px] text-forest-700">مسار الغرفة النشط: <span id="sync-room-id-display" class="font-bold">غير متصل</span></p>
+                </div>
+
+                <div class="pt-1 flex items-center justify-end gap-2">
+                    <button type="button" onclick="closeSettingsModal()" class="px-4 py-2.5 rounded-xl bg-sand-100 text-forest-900 text-xs font-bold">إلغاء</button>
+                    <button type="submit" class="px-5 py-2.5 rounded-xl bg-forest-900 hover:bg-forest-800 text-white text-sm font-bold transition">حفظ الإعدادات</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- نافذة تأكيد الحذف -->
+    <div id="confirm-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-forest-900/50 backdrop-blur-xs p-4">
+        <div class="archive-card w-full max-w-sm p-6 space-y-4">
+            <h4 class="font-serif text-xl font-bold text-forest-900">تأكيد الحذف</h4>
+            <p id="confirm-modal-message" class="text-sm text-forest-800">هل أنت متأكد من الحذف؟</p>
+            <div class="flex items-center justify-end gap-2 pt-2">
+                <button type="button" onclick="closeConfirmModal()" class="px-4 py-2 rounded-xl bg-sand-100 text-forest-900 text-xs font-bold">إلغاء</button>
+                <button type="button" id="confirm-delete-btn" class="px-4 py-2 rounded-xl bg-terracotta-600 hover:bg-terracotta-700 text-white text-xs font-bold">تأكيد الحذف</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const STORAGE_KEYS = {
+            SETTINGS: 'our_archive_settings_v1',
+            MEMORIES: 'our_archive_memories_v1',
+            HOME: 'our_archive_home_v1',
+            SECRETS: 'our_archive_secrets_v1',
+            WATCHED: 'our_archive_watched_v1',
+            IDEAS: 'our_archive_ideas_v1',
+            CLOUD_CONFIG: 'our_archive_cloud_config_v1'
+        };
+
+        const AVAILABLE_EMOJIS = ['❤️', '✨', '🌸', '☀️', '☕', '🌿', '🌙', '🎉', '🏡', '🎬'];
+
+        const DEFAULT_SETTINGS = {
+            brandName: 'أرشيف أيامنا',
+            heroBadge: 'معاً منذ البداية',
+            heroTitle: 'أرشيف أيامنا الجميلة',
+            heroSubtitle: 'كل لحظة عشناها، وكل تفصيل نبنيه معاً محفوظ في مكان واحد دافئ.',
+            startDate: '2025-01-01T00:00',
+            syncRoom: 'our-shared-archive'
+        };
+
+        let appSettings = { ...DEFAULT_SETTINGS };
+        let memoriesList = [];
+        let homeList = [];
+        let secretsList = [];
+        let watchedList = [];
+        let ideasList = [];
+
+        let activeChapterKey = 'memories';
+        let timerIntervalId = null;
+        let toastTimeoutId = null;
+        let pendingDeleteAction = null;
+        let visibleSecretIds = {};
+
+        let currentMemoryImage = '';
+        let currentHomeImage = '';
+        let currentWatchedImage = '';
+
+        function showToast(message) {
+            const banner = document.getElementById('toast-banner');
+            const textEl = document.getElementById('toast-message');
+            if (!banner || !textEl) return;
+
+            textEl.textContent = message || '';
+            banner.classList.remove('hidden');
+
+            if (toastTimeoutId) clearTimeout(toastTimeoutId);
+            toastTimeoutId = setTimeout(() => {
+                banner.classList.add('hidden');
+            }, 2800);
+        }
+
+        function escapeHtml(text) {
+            if (typeof text !== 'string') return '';
+            return text
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function safeCreateIcons() {
+            try {
+                if (window.lucide && typeof window.lucide.createIcons === 'function') {
+                    window.lucide.createIcons();
+                }
+            } catch (err) {
+                console.warn('تعذر تحديث الأيقونات:', err);
+            }
+        }
+
+        function loadDataFromStorage() {
+            try {
+                const rawSettings = localStorage.getItem(STORAGE_KEYS.SETTINGS);
+                appSettings = rawSettings ? { ...DEFAULT_SETTINGS, ...JSON.parse(rawSettings) } : { ...DEFAULT_SETTINGS };
+
+                memoriesList = JSON.parse(localStorage.getItem(STORAGE_KEYS.MEMORIES) || '[]');
+                homeList = JSON.parse(localStorage.getItem(STORAGE_KEYS.HOME) || '[]');
+                secretsList = JSON.parse(localStorage.getItem(STORAGE_KEYS.SECRETS) || '[]');
+                watchedList = JSON.parse(localStorage.getItem(STORAGE_KEYS.WATCHED) || '[]');
+                ideasList = JSON.parse(localStorage.getItem(STORAGE_KEYS.IDEAS) || '[]');
+            } catch (error) {
+                console.error('خطأ في قراءة البيانات من التخزين المحلي:', error);
+                appSettings = { ...DEFAULT_SETTINGS };
+                memoriesList = [];
+                homeList = [];
+                secretsList = [];
+                watchedList = [];
+                ideasList = [];
+            }
+        }
+
+        function saveDataToStorage(key, data) {
+            try {
+                localStorage.setItem(key, JSON.stringify(data));
+                return true;
+            } catch (error) {
+                console.error('خطأ في حفظ البيانات:', error);
+                showToast('تعذر الحفظ، قد تكون مساحة التخزين ممتلئة');
+                return false;
+            }
+        }
+
+        function applySettingsToUI() {
+            const brandEl = document.getElementById('header-brand-name');
+            const badgeEl = document.getElementById('hero-badge-text');
+            const titleEl = document.getElementById('hero-title');
+            const subEl = document.getElementById('hero-subtitle');
+
+            if (brandEl) brandEl.textContent = appSettings.brandName;
+            if (badgeEl) badgeEl.textContent = appSettings.heroBadge;
+            if (titleEl) titleEl.textContent = appSettings.heroTitle;
+            if (subEl) subEl.textContent = appSettings.heroSubtitle;
+            document.title = appSettings.heroTitle || 'أرشيف أيامنا الجميلة';
+        }
+
+        function updateTimerDisplay() {
+            const daysEl = document.getElementById('timer-days');
+            const hoursEl = document.getElementById('timer-hours');
+            const minutesEl = document.getElementById('timer-minutes');
+            const secondsEl = document.getElementById('timer-seconds');
+            if (!daysEl || !hoursEl || !minutesEl || !secondsEl) return;
+
+            const startTime = new Date(appSettings.startDate).getTime();
+            const now = Date.now();
+            const diff = Math.max(0, now - (Number.isNaN(startTime) ? now : startTime));
+
+            const totalSeconds = Math.floor(diff / 1000);
+            const days = Math.floor(totalSeconds / 86400);
+            const hours = Math.floor((totalSeconds % 86400) / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+
+            daysEl.textContent = String(days);
+            hoursEl.textContent = String(hours).padStart(2, '0');
+            minutesEl.textContent = String(minutes).padStart(2, '0');
+            secondsEl.textContent = String(seconds).padStart(2, '0');
+        }
+
+        function startLiveTimer() {
+            if (timerIntervalId) clearInterval(timerIntervalId);
+            updateTimerDisplay();
+            timerIntervalId = setInterval(updateTimerDisplay, 1000);
+        }
+
+        function updateSectionCounters() {
+            const map = {
+                'count-memories': `${memoriesList.length} ذكرى`,
+                'count-home': `${homeList.length} ركن`,
+                'count-secrets': `${secretsList.length} رمز`,
+                'count-watched': `${watchedList.length} عمل`,
+                'count-ideas': `${ideasList.length} فكرة`
+            };
+            Object.entries(map).forEach(([id, text]) => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = text;
+            });
+
+            const sidebarMap = {
+                'sidebar-count-memories': memoriesList.length,
+                'sidebar-count-home': homeList.length,
+                'sidebar-count-secrets': secretsList.length,
+                'sidebar-count-watched': watchedList.length,
+                'sidebar-count-ideas': ideasList.length
+            };
+            Object.entries(sidebarMap).forEach(([id, count]) => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = String(count);
+            });
+        }
+
+        function selectChapter(key) {
+            activeChapterKey = key;
+
+            document.querySelectorAll('[data-chapter-panel]').forEach(panel => {
+                if (panel.getAttribute('data-chapter-panel') === key) {
+                    panel.classList.remove('hidden');
+                } else {
+                    panel.classList.add('hidden');
+                }
+            });
+
+            document.querySelectorAll('[data-chapter-btn]').forEach(btn => {
+                if (btn.getAttribute('data-chapter-btn') === key) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+
+            document.querySelectorAll('.section-nav-pill').forEach(link => {
+                if (link.getAttribute('data-nav') === key) {
+                    link.classList.add('active');
+                    link.classList.remove('text-forest-900');
+                } else {
+                    link.classList.remove('active');
+                    link.classList.add('text-forest-900');
+                }
+            });
+
+            closeChaptersDrawer();
+            safeCreateIcons();
+        }
+
+        function openChaptersDrawer() {
+            const sidebar = document.getElementById('chapters-sidebar');
+            const backdrop = document.getElementById('chapters-backdrop');
+            if (sidebar) sidebar.classList.remove('translate-x-full');
+            if (backdrop) backdrop.classList.remove('hidden');
+        }
+
+        function closeChaptersDrawer() {
+            const sidebar = document.getElementById('chapters-sidebar');
+            const backdrop = document.getElementById('chapters-backdrop');
+            if (sidebar) sidebar.classList.add('translate-x-full');
+            if (backdrop) backdrop.classList.add('hidden');
+        }
+
+        // نافذة الإضافة الموحدة
+        function switchUnifiedModalCategory(category) {
+            const target = ['memories', 'home', 'secrets', 'watched', 'ideas'].includes(category) ? category : 'memories';
+            const selectEl = document.getElementById('unified-category-select');
+            if (selectEl) selectEl.value = target;
+
+            const formMap = {
+                memories: 'memory-form',
+                home: 'home-form',
+                secrets: 'secret-form',
+                watched: 'watched-form',
+                ideas: 'idea-form'
+            };
+
+            Object.entries(formMap).forEach(([key, formId]) => {
+                const formEl = document.getElementById(formId);
+                if (!formEl) return;
+                if (key === target) {
+                    formEl.classList.remove('hidden');
+                } else {
+                    formEl.classList.add('hidden');
+                }
+            });
+
+            safeCreateIcons();
+        }
+
+        function openUnifiedAddModal(category = activeChapterKey) {
+            const modal = document.getElementById('unified-add-modal');
+            if (!modal) return;
+            switchUnifiedModalCategory(category || 'memories');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            safeCreateIcons();
+        }
+
+        function closeUnifiedAddModal() {
+            const modal = document.getElementById('unified-add-modal');
+            if (!modal) return;
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        // الرموز التعبيرية للذكريات
+        function renderEmojiSelector(selectedEmoji = '❤️') {
+            const container = document.getElementById('emoji-selector-container');
+            const hiddenInput = document.getElementById('memory-emoji');
+            if (!container) return;
+
+            if (hiddenInput) hiddenInput.value = selectedEmoji;
+
+            container.innerHTML = AVAILABLE_EMOJIS.map(emoji => {
+                const isActive = emoji === selectedEmoji ? 'active' : '';
+                return `<button type="button" onclick="selectEmoji('${emoji}')" class="emoji-option ${isActive} w-10 h-10 rounded-xl border border-sand-300 bg-sand-50 text-base flex items-center justify-center transition">${emoji}</button>`;
+            }).join('');
+        }
+
+        function selectEmoji(emoji) {
+            const hiddenInput = document.getElementById('memory-emoji');
+            if (hiddenInput) hiddenInput.value = emoji;
+            renderEmojiSelector(emoji);
+        }
+
+        // إدارة الصور (رفع ملف أو رابط)
+        function setEntityImageState(entity, src) {
+            if (entity === 'memory') currentMemoryImage = src || '';
+            if (entity === 'home') currentHomeImage = src || '';
+            if (entity === 'watched') currentWatchedImage = src || '';
+
+            const box = document.getElementById(`${entity}-image-preview-box`);
+            const img = document.getElementById(`${entity}-image-preview`);
+            if (!box || !img) return;
+
+            if (src) {
+                img.src = src;
+                box.classList.remove('hidden');
+            } else {
+                img.src = '';
+                box.classList.add('hidden');
+            }
+            safeCreateIcons();
+        }
+
+        function handleImageFileUpload(event, entity) {
+            const file = event.target.files && event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const urlInput = document.getElementById(`${entity}-image-url`);
+                if (urlInput) urlInput.value = '';
+                setEntityImageState(entity, e.target.result || '');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function handleImageUrlInput(event, entity) {
+            const val = (event.target.value || '').trim();
+            const fileInput = document.getElementById(`${entity}-image-file`);
+            if (fileInput && val) fileInput.value = '';
+            setEntityImageState(entity, val);
+        }
+
+        function clearEntityImageSelection(entity) {
+            const fileInput = document.getElementById(`${entity}-image-file`);
+            const urlInput = document.getElementById(`${entity}-image-url`);
+            if (fileInput) fileInput.value = '';
+            if (urlInput) urlInput.value = '';
+            setEntityImageState(entity, '');
+        }
+
+        // 1. الذكريات
+        function resetMemoryForm() {
+            const form = document.getElementById('memory-form');
+            if (form) form.reset();
+            document.getElementById('memory-edit-id').value = '';
+            document.getElementById('memory-form-title').textContent = 'إضافة ذكرى جديدة';
+            document.getElementById('memory-submit-btn').querySelector('span').textContent = 'حفظ الذكرى';
+            document.getElementById('cancel-memory-edit-btn').classList.add('hidden');
+            selectEmoji('❤️');
+            clearEntityImageSelection('memory');
+        }
+
+        function handleMemorySubmit(event) {
+            event.preventDefault();
+            const editId = document.getElementById('memory-edit-id').value;
+            const title = document.getElementById('memory-title').value.trim();
+            const date = document.getElementById('memory-date').value;
+            const emoji = document.getElementById('memory-emoji').value || '❤️';
+            const desc = document.getElementById('memory-desc').value.trim();
+
+            if (!title || !date || !desc) return;
+
+            if (editId) {
+                memoriesList = memoriesList.map(item =>
+                    item.id === editId
+                        ? { ...item, title, date, emoji, desc, image: currentMemoryImage }
+                        : item
+                );
+                showToast('تم تحديث الذكرى بنجاح');
+            } else {
+                memoriesList.unshift({
+                    id: String(Date.now()),
+                    title,
+                    date,
+                    emoji,
+                    desc,
+                    image: currentMemoryImage
+                });
+                showToast('تمت إضافة الذكرى');
+            }
+
+            saveDataToStorage(STORAGE_KEYS.MEMORIES, memoriesList);
+            renderMemories();
+            updateSectionCounters();
+            resetMemoryForm();
+            closeUnifiedAddModal();
+        }
+
+        function editMemory(id) {
+            const item = memoriesList.find(m => m.id === id);
+            if (!item) return;
+
+            selectChapter('memories');
+            document.getElementById('memory-edit-id').value = item.id;
+            document.getElementById('memory-title').value = item.title;
+            document.getElementById('memory-date').value = item.date;
+            document.getElementById('memory-desc').value = item.desc;
+            selectEmoji(item.emoji || '❤️');
+
+            const urlInput = document.getElementById('memory-image-url');
+            if (item.image && !item.image.startsWith('data:')) {
+                if (urlInput) urlInput.value = item.image;
+            } else if (urlInput) {
+                urlInput.value = '';
+            }
+            setEntityImageState('memory', item.image || '');
+
+            document.getElementById('memory-form-title').textContent = 'تعديل الذكرى';
+            document.getElementById('memory-submit-btn').querySelector('span').textContent = 'تحديث الذكرى';
+            document.getElementById('cancel-memory-edit-btn').classList.remove('hidden');
+            openUnifiedAddModal('memories');
+        }
+
+        function deleteMemory(id) {
+            openConfirmModal('هل أنت متأكد من حذف هذه الذكرى؟', () => {
+                memoriesList = memoriesList.filter(m => m.id !== id);
+                saveDataToStorage(STORAGE_KEYS.MEMORIES, memoriesList);
+                renderMemories();
+                updateSectionCounters();
+                showToast('تم حذف الذكرى');
+            });
+        }
+
+        function renderMemories() {
+            const grid = document.getElementById('memories-grid');
+            if (!grid) return;
+
+            if (!memoriesList.length) {
+                grid.innerHTML = `<div class="archive-card p-8 text-center col-span-full text-sm text-forest-800/75">لا توجد ذكريات مسجلة بعد. أضف أول ذكرى من زر الإضافة.</div>`;
+                return;
+            }
+
+            grid.innerHTML = memoriesList.map(item => `
+                <article class="archive-card overflow-hidden flex flex-col justify-between">
+                    <div>
+                        ${item.image ? `<img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)}" class="w-full h-48 object-cover border-b border-sand-200" onerror="this.src='https://placehold.co/600x300/F2ECE1/1B382A?text=ذكرى'">` : ''}
+                        <div class="p-5 space-y-2.5">
+                            <div class="flex items-center justify-between gap-2">
+                                <span class="text-xs font-bold text-terracotta-700 bg-terracotta-50 px-2.5 py-1 rounded-full">${escapeHtml(item.date)}</span>
+                                <span class="text-lg">${escapeHtml(item.emoji || '❤️')}</span>
+                            </div>
+                            <h4 class="font-serif text-xl font-bold text-forest-900">${escapeHtml(item.title)}</h4>
+                            <p class="text-sm text-forest-800/90 leading-relaxed whitespace-pre-line">${escapeHtml(item.desc)}</p>
+                        </div>
+                    </div>
+                    <div class="px-5 py-3 bg-sand-50 border-t border-sand-200 flex items-center justify-end gap-2">
+                        <button type="button" onclick="editMemory('${item.id}')" class="px-3 py-1.5 rounded-lg bg-white border border-sand-300 text-xs font-bold text-forest-900 hover:bg-sand-100">تعديل</button>
+                        <button type="button" onclick="deleteMemory('${item.id}')" class="px-3 py-1.5 rounded-lg bg-terracotta-50 border border-terracotta-200 text-xs font-bold text-terracotta-700 hover:bg-terracotta-100">حذف</button>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        // 2. منزلنا
+        function resetHomeForm() {
+            const form = document.getElementById('home-form');
+            if (form) form.reset();
+            document.getElementById('home-edit-id').value = '';
+            document.getElementById('home-form-title').textContent = 'إضافة ركن أو فكرة للمنزل';
+            document.getElementById('home-submit-btn').querySelector('span').textContent = 'حفظ في منزلنا';
+            document.getElementById('cancel-home-edit-btn').classList.add('hidden');
+            clearEntityImageSelection('home');
+        }
+
+        function handleHomeSubmit(event) {
+            event.preventDefault();
+            const editId = document.getElementById('home-edit-id').value;
+            const title = document.getElementById('home-title').value.trim();
+            const category = document.getElementById('home-category').value;
+            const desc = document.getElementById('home-desc').value.trim();
+
+            if (!title || !desc) return;
+
+            if (editId) {
+                homeList = homeList.map(item =>
+                    item.id === editId
+                        ? { ...item, title, category, desc, image: currentHomeImage }
+                        : item
+                );
+                showToast('تم تحديث ركن المنزل');
+            } else {
+                homeList.unshift({
+                    id: String(Date.now()),
+                    title,
+                    category,
+                    desc,
+                    image: currentHomeImage
+                });
+                showToast('تمت الإضافة إلى منزلنا');
+            }
+
+            saveDataToStorage(STORAGE_KEYS.HOME, homeList);
+            renderHome();
+            updateSectionCounters();
+            resetHomeForm();
+            closeUnifiedAddModal();
+        }
+
+        function editHome(id) {
+            const item = homeList.find(h => h.id === id);
+            if (!item) return;
+
+            selectChapter('home');
+            document.getElementById('home-edit-id').value = item.id;
+            document.getElementById('home-title').value = item.title;
+            document.getElementById('home-category').value = item.category || 'غرفة المعيشة';
+            document.getElementById('home-desc').value = item.desc;
+
+            const urlInput = document.getElementById('home-image-url');
+            if (item.image && !item.image.startsWith('data:')) {
+                if (urlInput) urlInput.value = item.image;
+            } else if (urlInput) {
+                urlInput.value = '';
+            }
+            setEntityImageState('home', item.image || '');
+
+            document.getElementById('home-form-title').textContent = 'تعديل ركن المنزل';
+            document.getElementById('home-submit-btn').querySelector('span').textContent = 'تحديث الركن';
+            document.getElementById('cancel-home-edit-btn').classList.remove('hidden');
+            openUnifiedAddModal('home');
+        }
+
+        function deleteHome(id) {
+            openConfirmModal('هل أنت متأكد من حذف هذا الركن من منزلنا؟', () => {
+                homeList = homeList.filter(h => h.id !== id);
+                saveDataToStorage(STORAGE_KEYS.HOME, homeList);
+                renderHome();
+                updateSectionCounters();
+                showToast('تم حذف الركن');
+            });
+        }
+
+        function renderHome() {
+            const listEl = document.getElementById('home-list');
+            if (!listEl) return;
+
+            if (!homeList.length) {
+                listEl.innerHTML = `<div class="archive-card p-8 text-center col-span-full text-sm text-forest-800/75">لم تتم إضافة أركان أو أفكار لمنزلنا بعد.</div>`;
+                return;
+            }
+
+            listEl.innerHTML = homeList.map(item => `
+                <article class="archive-card overflow-hidden flex flex-col justify-between">
+                    <div>
+                        ${item.image ? `<img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)}" class="w-full h-48 object-cover border-b border-sand-200" onerror="this.src='https://placehold.co/600x300/F2ECE1/1B382A?text=منزلنا'">` : ''}
+                        <div class="p-5 space-y-2">
+                            <span class="inline-block text-xs font-bold text-forest-800 bg-forest-100 px-2.5 py-1 rounded-full">${escapeHtml(item.category || 'منزلنا')}</span>
+                            <h4 class="font-serif text-xl font-bold text-forest-900">${escapeHtml(item.title)}</h4>
+                            <p class="text-sm text-forest-800/90 leading-relaxed whitespace-pre-line">${escapeHtml(item.desc)}</p>
+                        </div>
+                    </div>
+                    <div class="px-5 py-3 bg-sand-50 border-t border-sand-200 flex items-center justify-end gap-2">
+                        <button type="button" onclick="editHome('${item.id}')" class="px-3 py-1.5 rounded-lg bg-white border border-sand-300 text-xs font-bold text-forest-900 hover:bg-sand-100">تعديل</button>
+                        <button type="button" onclick="deleteHome('${item.id}')" class="px-3 py-1.5 rounded-lg bg-terracotta-50 border border-terracotta-200 text-xs font-bold text-terracotta-700 hover:bg-terracotta-100">حذف</button>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        // 3. كلمات سر
+        function resetSecretForm() {
+            const form = document.getElementById('secret-form');
+            if (form) form.reset();
+            document.getElementById('secret-edit-id').value = '';
+            document.getElementById('secret-form-title').textContent = 'إضافة كلمة سر أو رمز مشترك';
+            document.getElementById('secret-submit-btn').querySelector('span').textContent = 'حفظ كلمة السر';
+            document.getElementById('cancel-secret-edit-btn').classList.add('hidden');
+        }
+
+        function handleSecretSubmit(event) {
+            event.preventDefault();
+            const editId = document.getElementById('secret-edit-id').value;
+            const label = document.getElementById('secret-label').value.trim();
+            const value = document.getElementById('secret-value').value.trim();
+            const note = document.getElementById('secret-note').value.trim();
+
+            if (!label || !value) return;
+
+            if (editId) {
+                secretsList = secretsList.map(item =>
+                    item.id === editId ? { ...item, label, value, note } : item
+                );
+                showToast('تم تحديث كلمة السر');
+            } else {
+                secretsList.unshift({
+                    id: String(Date.now()),
+                    label,
+                    value,
+                    note
+                });
+                showToast('تم حفظ كلمة السر');
+            }
+
+            saveDataToStorage(STORAGE_KEYS.SECRETS, secretsList);
+            renderSecrets();
+            updateSectionCounters();
+            resetSecretForm();
+            closeUnifiedAddModal();
+        }
+
+        function toggleSecretVisibility(id) {
+            visibleSecretIds[id] = !visibleSecretIds[id];
+            renderSecrets();
+        }
+
+        function editSecret(id) {
+            const item = secretsList.find(s => s.id === id);
+            if (!item) return;
+
+            selectChapter('secrets');
+            document.getElementById('secret-edit-id').value = item.id;
+            document.getElementById('secret-label').value = item.label;
+            document.getElementById('secret-value').value = item.value;
+            document.getElementById('secret-note').value = item.note || '';
+
+            document.getElementById('secret-form-title').textContent = 'تعديل كلمة السر';
+            document.getElementById('secret-submit-btn').querySelector('span').textContent = 'تحديث الرمز';
+            document.getElementById('cancel-secret-edit-btn').classList.remove('hidden');
+            openUnifiedAddModal('secrets');
+        }
+
+        function deleteSecret(id) {
+            openConfirmModal('هل أنت متأكد من حذف كلمة السر هذه؟', () => {
+                secretsList = secretsList.filter(s => s.id !== id);
+                delete visibleSecretIds[id];
+                saveDataToStorage(STORAGE_KEYS.SECRETS, secretsList);
+                renderSecrets();
+                updateSectionCounters();
+                showToast('تم حذف كلمة السر');
+            });
+        }
+
+        function renderSecrets() {
+            const listEl = document.getElementById('secrets-list');
+            if (!listEl) return;
+
+            if (!secretsList.length) {
+                listEl.innerHTML = `<div class="archive-card p-8 text-center col-span-full text-sm text-forest-800/75">لا توجد كلمات سر محفوظة بعد.</div>`;
+                return;
+            }
+
+            listEl.innerHTML = secretsList.map(item => {
+                const isShown = !!visibleSecretIds[item.id];
+                return `
+                    <article class="archive-card p-5 flex flex-col justify-between gap-4">
+                        <div class="space-y-2">
+                            <h4 class="font-serif text-lg font-bold text-forest-900">${escapeHtml(item.label)}</h4>
+                            <div class="px-3.5 py-2 rounded-xl bg-sand-50 border border-sand-200 font-mono text-sm font-bold text-forest-900">
+                                ${isShown ? escapeHtml(item.value) : '••••••••'}
+                            </div>
+                            ${item.note ? `<p class="text-xs text-forest-800/80">${escapeHtml(item.note)}</p>` : ''}
+                        </div>
+                        <div class="flex items-center justify-between gap-2 pt-2 border-t border-sand-100">
+                            <button type="button" onclick="toggleSecretVisibility('${item.id}')" class="px-3 py-1.5 rounded-lg bg-forest-50 text-xs font-bold text-forest-900 hover:bg-forest-100">
+                                ${isShown ? 'إخفاء' : 'إظهار'}
+                            </button>
+                            <div class="flex items-center gap-2">
+                                <button type="button" onclick="editSecret('${item.id}')" class="px-3 py-1.5 rounded-lg bg-white border border-sand-300 text-xs font-bold text-forest-900 hover:bg-sand-100">تعديل</button>
+                                <button type="button" onclick="deleteSecret('${item.id}')" class="px-3 py-1.5 rounded-lg bg-terracotta-50 border border-terracotta-200 text-xs font-bold text-terracotta-700 hover:bg-terracotta-100">حذف</button>
+                            </div>
+                        </div>
+                    </article>
+                `;
+            }).join('');
+        }
+
+        // 4. مشاهداتنا
+        function resetWatchedForm() {
+            const form = document.getElementById('watched-form');
+            if (form) form.reset();
+            document.getElementById('watched-edit-id').value = '';
+            document.getElementById('watched-form-title').textContent = 'إضافة فيلم أو مسلسل شاهدناه';
+            document.getElementById('watched-submit-btn').querySelector('span').textContent = 'حفظ المشاهدة';
+            document.getElementById('cancel-watched-edit-btn').classList.add('hidden');
+            clearEntityImageSelection('watched');
+        }
+
+        function handleWatchedSubmit(event) {
+            event.preventDefault();
+            const editId = document.getElementById('watched-edit-id').value;
+            const title = document.getElementById('watched-title').value.trim();
+            const type = document.getElementById('watched-type').value;
+            const rating = document.getElementById('watched-rating').value;
+            const review = document.getElementById('watched-review').value.trim();
+
+            if (!title || !review) return;
+
+            if (editId) {
+                watchedList = watchedList.map(item =>
+                    item.id === editId
+                        ? { ...item, title, type, rating, review, image: currentWatchedImage }
+                        : item
+                );
+                showToast('تم تحديث المشاهدة');
+            } else {
+                watchedList.unshift({
+                    id: String(Date.now()),
+                    title,
+                    type,
+                    rating,
+                    review,
+                    image: currentWatchedImage
+                });
+                showToast('تمت إضافة المشاهدة');
+            }
+
+            saveDataToStorage(STORAGE_KEYS.WATCHED, watchedList);
+            renderWatched();
+            updateSectionCounters();
+            resetWatchedForm();
+            closeUnifiedAddModal();
+        }
+
+        function editWatched(id) {
+            const item = watchedList.find(w => w.id === id);
+            if (!item) return;
+
+            selectChapter('watched');
+            document.getElementById('watched-edit-id').value = item.id;
+            document.getElementById('watched-title').value = item.title;
+            document.getElementById('watched-type').value = item.type || 'فيلم';
+            document.getElementById('watched-rating').value = item.rating || '5';
+            document.getElementById('watched-review').value = item.review;
+
+            const urlInput = document.getElementById('watched-image-url');
+            if (item.image && !item.image.startsWith('data:')) {
+                if (urlInput) urlInput.value = item.image;
+            } else if (urlInput) {
+                urlInput.value = '';
+            }
+            setEntityImageState('watched', item.image || '');
+
+            document.getElementById('watched-form-title').textContent = 'تعديل المشاهدة';
+            document.getElementById('watched-submit-btn').querySelector('span').textContent = 'تحديث المشاهدة';
+            document.getElementById('cancel-watched-edit-btn').classList.remove('hidden');
+            openUnifiedAddModal('watched');
+        }
+
+        function deleteWatched(id) {
+            openConfirmModal('هل أنت متأكد من حذف هذا العمل من مشاهداتنا؟', () => {
+                watchedList = watchedList.filter(w => w.id !== id);
+                saveDataToStorage(STORAGE_KEYS.WATCHED, watchedList);
+                renderWatched();
+                updateSectionCounters();
+                showToast('تم حذف المشاهدة');
+            });
+        }
+
+        function renderWatched() {
+            const listEl = document.getElementById('watched-list');
+            if (!listEl) return;
+
+            if (!watchedList.length) {
+                listEl.innerHTML = `<div class="archive-card p-8 text-center col-span-full text-sm text-forest-800/75">لا توجد أفلام أو مسلسلات مضافة في مشاهداتنا بعد.</div>`;
+                return;
+            }
+
+            listEl.innerHTML = watchedList.map(item => `
+                <article class="archive-card overflow-hidden flex flex-col justify-between">
+                    <div>
+                        ${item.image ? `<img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)}" class="w-full h-48 object-cover border-b border-sand-200" onerror="this.src='https://placehold.co/600x300/F2ECE1/1B382A?text=مشاهداتنا'">` : ''}
+                        <div class="p-5 space-y-2">
+                            <div class="flex items-center justify-between gap-2">
+                                <span class="text-xs font-bold text-forest-800 bg-forest-100 px-2.5 py-1 rounded-full">${escapeHtml(item.type || 'عمل')}</span>
+                                <span class="text-xs font-bold text-terracotta-700 bg-terracotta-50 px-2.5 py-1 rounded-full">${escapeHtml(item.rating || '5')} / 5</span>
+                            </div>
+                            <h4 class="font-serif text-xl font-bold text-forest-900">${escapeHtml(item.title)}</h4>
+                            <p class="text-sm text-forest-800/90 leading-relaxed whitespace-pre-line">${escapeHtml(item.review)}</p>
+                        </div>
+                    </div>
+                    <div class="px-5 py-3 bg-sand-50 border-t border-sand-200 flex items-center justify-end gap-2">
+                        <button type="button" onclick="editWatched('${item.id}')" class="px-3 py-1.5 rounded-lg bg-white border border-sand-300 text-xs font-bold text-forest-900 hover:bg-sand-100">تعديل</button>
+                        <button type="button" onclick="deleteWatched('${item.id}')" class="px-3 py-1.5 rounded-lg bg-terracotta-50 border border-terracotta-200 text-xs font-bold text-terracotta-700 hover:bg-terracotta-100">حذف</button>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        // 5. أفكارنا
+        function resetIdeaForm() {
+            const form = document.getElementById('idea-form');
+            if (form) form.reset();
+            document.getElementById('idea-edit-id').value = '';
+            document.getElementById('idea-form-title').textContent = 'إضافة فكرة جديدة';
+            document.getElementById('idea-submit-btn').querySelector('span').textContent = 'حفظ الفكرة';
+            document.getElementById('cancel-idea-edit-btn').classList.add('hidden');
+        }
+
+        function handleIdeaSubmit(event) {
+            event.preventDefault();
+            const editId = document.getElementById('idea-edit-id').value;
+            const title = document.getElementById('idea-title').value.trim();
+            const status = document.getElementById('idea-status').value;
+            const desc = document.getElementById('idea-desc').value.trim();
+
+            if (!title || !desc) return;
+
+            if (editId) {
+                ideasList = ideasList.map(item =>
+                    item.id === editId ? { ...item, title, status, desc } : item
+                );
+                showToast('تم تحديث الفكرة');
+            } else {
+                ideasList.unshift({
+                    id: String(Date.now()),
+                    title,
+                    status,
+                    desc
+                });
+                showToast('تمت إضافة الفكرة');
+            }
+
+            saveDataToStorage(STORAGE_KEYS.IDEAS, ideasList);
+            renderIdeas();
+            updateSectionCounters();
+            resetIdeaForm();
+            closeUnifiedAddModal();
+        }
+
+        function editIdea(id) {
+            const item = ideasList.find(i => i.id === id);
+            if (!item) return;
+
+            selectChapter('ideas');
+            document.getElementById('idea-edit-id').value = item.id;
+            document.getElementById('idea-title').value = item.title;
+            document.getElementById('idea-status').value = item.status || 'قيد التخطيط';
+            document.getElementById('idea-desc').value = item.desc;
+
+            document.getElementById('idea-form-title').textContent = 'تعديل الفكرة';
+            document.getElementById('idea-submit-btn').querySelector('span').textContent = 'تحديث الفكرة';
+            document.getElementById('cancel-idea-edit-btn').classList.remove('hidden');
+            openUnifiedAddModal('ideas');
+        }
+
+        function deleteIdea(id) {
+            openConfirmModal('هل أنت متأكد من حذف هذه الفكرة؟', () => {
+                ideasList = ideasList.filter(i => i.id !== id);
+                saveDataToStorage(STORAGE_KEYS.IDEAS, ideasList);
+                renderIdeas();
+                updateSectionCounters();
+                showToast('تم حذف الفكرة');
+            });
+        }
+
+        function renderIdeas() {
+            const listEl = document.getElementById('ideas-list');
+            if (!listEl) return;
+
+            if (!ideasList.length) {
+                listEl.innerHTML = `<div class="archive-card p-8 text-center col-span-full text-sm text-forest-800/75">لا توجد أفكار مسجلة بعد. أضف أول فكرة من زر الإضافة.</div>`;
+                return;
+            }
+
+            listEl.innerHTML = ideasList.map(item => `
+                <article class="archive-card overflow-hidden flex flex-col justify-between">
+                    <div class="p-5 space-y-2">
+                        <span class="inline-block text-xs font-bold text-terracotta-700 bg-terracotta-50 px-2.5 py-1 rounded-full">${escapeHtml(item.status || 'قيد التخطيط')}</span>
+                        <h4 class="font-serif text-xl font-bold text-forest-900">${escapeHtml(item.title)}</h4>
+                        <p class="text-sm text-forest-800/90 leading-relaxed whitespace-pre-line">${escapeHtml(item.desc)}</p>
+                    </div>
+                    <div class="px-5 py-3 bg-sand-50 border-t border-sand-200 flex items-center justify-end gap-2">
+                        <button type="button" onclick="editIdea('${item.id}')" class="px-3 py-1.5 rounded-lg bg-white border border-sand-300 text-xs font-bold text-forest-900 hover:bg-sand-100">تعديل</button>
+                        <button type="button" onclick="deleteIdea('${item.id}')" class="px-3 py-1.5 rounded-lg bg-terracotta-50 border border-terracotta-200 text-xs font-bold text-terracotta-700 hover:bg-terracotta-100">حذف</button>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        // نسخ سريع لرمز الغرفة وإعدادات السحابة
+        function copyTextToClipboard(text, successMsg) {
+            if (!text) {
+                showToast('لا يوجد نص لنسخه');
+                return;
+            }
+            if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+                navigator.clipboard.writeText(text).then(() => {
+                    showToast(successMsg);
+                }).catch(() => {
+                    showToast('تعذر النسخ تلقائياً، انسخه يدوياً');
+                });
+            } else {
+                showToast('تعذر النسخ تلقائياً، انسخه يدوياً');
+            }
+        }
+
+        function copySyncRoomCode() {
+            const roomInput = document.getElementById('setting-sync-room');
+            const code = (roomInput && roomInput.value.trim()) || appSettings.syncRoom || 'our-shared-archive';
+            copyTextToClipboard(code, 'تم نسخ رمز الغرفة المشتركة');
+        }
+
+        function copyCloudConfigText() {
+            const cfgArea = document.getElementById('setting-cloud-config');
+            const txt = (cfgArea && cfgArea.value.trim()) || '';
+            copyTextToClipboard(txt, 'تم نسخ إعدادات المشروع السحابي');
+        }
+
+        // نافذة الإعدادات
+        function openSettingsModal() {
+            document.getElementById('setting-brand-name').value = appSettings.brandName;
+            document.getElementById('setting-hero-badge').value = appSettings.heroBadge;
+            document.getElementById('setting-hero-title').value = appSettings.heroTitle;
+            document.getElementById('setting-hero-subtitle').value = appSettings.heroSubtitle;
+            document.getElementById('setting-start-date').value = appSettings.startDate;
+            document.getElementById('setting-sync-room').value = appSettings.syncRoom || 'our-shared-archive';
+
+            const cloudCfgEl = document.getElementById('setting-cloud-config');
+            if (cloudCfgEl) {
+                try {
+                    cloudCfgEl.value = localStorage.getItem(STORAGE_KEYS.CLOUD_CONFIG) || '';
+                } catch (err) {
+                    cloudCfgEl.value = '';
+                }
+            }
+
+            const modal = document.getElementById('settings-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            safeCreateIcons();
+        }
+
+        function closeSettingsModal() {
+            const modal = document.getElementById('settings-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function saveSettings(event) {
+            event.preventDefault();
+            const rawRoom = (document.getElementById('setting-sync-room').value || '').trim();
+            const cleanRoom = (rawRoom || 'our-shared-archive').replace(/[^a-zA-Z0-9_-]/g, '_');
+
+            const cloudCfgInput = document.getElementById('setting-cloud-config');
+            const rawCloudCfg = cloudCfgInput ? cloudCfgInput.value.trim() : '';
+
+            if (rawCloudCfg) {
+                try {
+                    const parsedCfg = JSON.parse(rawCloudCfg);
+                    if (!parsedCfg || typeof parsedCfg !== 'object' || !parsedCfg.projectId) {
+                        showToast('تأكد من أن إعدادات المشروع السحابي تحتوي على projectId صحيح');
+                        return;
+                    }
+                    localStorage.setItem(STORAGE_KEYS.CLOUD_CONFIG, JSON.stringify(parsedCfg));
+                } catch (err) {
+                    showToast('صيغة إعدادات المشروع السحابي غير صالحة (يجب أن تكون JSON)');
+                    return;
+                }
+            } else {
+                try {
+                    localStorage.removeItem(STORAGE_KEYS.CLOUD_CONFIG);
+                } catch (err) {
+                    console.warn('تعذر مسح إعدادات المشروع السحابي:', err);
+                }
+            }
+
+            appSettings = {
+                brandName: document.getElementById('setting-brand-name').value.trim() || DEFAULT_SETTINGS.brandName,
+                heroBadge: document.getElementById('setting-hero-badge').value.trim() || DEFAULT_SETTINGS.heroBadge,
+                heroTitle: document.getElementById('setting-hero-title').value.trim() || DEFAULT_SETTINGS.heroTitle,
+                heroSubtitle: document.getElementById('setting-hero-subtitle').value.trim() || DEFAULT_SETTINGS.heroSubtitle,
+                startDate: document.getElementById('setting-start-date').value || DEFAULT_SETTINGS.startDate,
+                syncRoom: cleanRoom
+            };
+
+            saveDataToStorage(STORAGE_KEYS.SETTINGS, appSettings);
+            applySettingsToUI();
+            startLiveTimer();
+            closeSettingsModal();
+            showToast('تم حفظ الإعدادات وجاري تحديث المزامنة السحابية');
+
+            if (typeof window.initRealtimeSync === 'function') {
+                window.initRealtimeSync();
+            }
+        }
+
+        // تجهيز حزمة البيانات الحالية للمزامنة السحابية
+        function buildCurrentPayload() {
+            return {
+                settings: { ...DEFAULT_SETTINGS, ...appSettings },
+                memories: Array.isArray(memoriesList) ? memoriesList : [],
+                home: Array.isArray(homeList) ? homeList : [],
+                secrets: Array.isArray(secretsList) ? secretsList : [],
+                watched: Array.isArray(watchedList) ? watchedList : [],
+                ideas: Array.isArray(ideasList) ? ideasList : [],
+                updatedAt: new Date().toISOString()
+            };
+        }
+
+        // تطبيق البيانات القادمة من السحابة وتحديث الواجهة دون حلقات تكرار
+        function applyRemotePayload(remoteData) {
+            if (!remoteData || typeof remoteData !== 'object') return;
+            syncState.isApplyingRemote = true;
+
+            try {
+                appSettings = {
+                    ...DEFAULT_SETTINGS,
+                    ...(remoteData.settings || {}),
+                    syncRoom: appSettings.syncRoom || (remoteData.settings && remoteData.settings.syncRoom) || syncState.roomId
+                };
+                memoriesList = Array.isArray(remoteData.memories) ? remoteData.memories : [];
+                homeList = Array.isArray(remoteData.home) ? remoteData.home : [];
+                secretsList = Array.isArray(remoteData.secrets) ? remoteData.secrets : [];
+                watchedList = Array.isArray(remoteData.watched) ? remoteData.watched : [];
+                ideasList = Array.isArray(remoteData.ideas) ? remoteData.ideas : [];
+
+                localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(appSettings));
+                localStorage.setItem(STORAGE_KEYS.MEMORIES, JSON.stringify(memoriesList));
+                localStorage.setItem(STORAGE_KEYS.HOME, JSON.stringify(homeList));
+                localStorage.setItem(STORAGE_KEYS.SECRETS, JSON.stringify(secretsList));
+                localStorage.setItem(STORAGE_KEYS.WATCHED, JSON.stringify(watchedList));
+                localStorage.setItem(STORAGE_KEYS.IDEAS, JSON.stringify(ideasList));
+
+                applySettingsToUI();
+                startLiveTimer();
+                renderMemories();
+                renderHome();
+                renderSecrets();
+                renderWatched();
+                renderIdeas();
+                updateSectionCounters();
+                safeCreateIcons();
+            } catch (err) {
+                console.error('خطأ أثناء تطبيق البيانات السحابية:', err);
+            } finally {
+                syncState.isApplyingRemote = false;
+            }
+        }
+
+        // حالة المزامنة السحابية المشتركة بين الجهازين
+        const syncState = {
+            app: null,
+            db: null,
+            auth: null,
+            user: null,
+            appId: typeof __app_id !== 'undefined' && __app_id ? String(__app_id) : 'default-app-id',
+            roomId: 'our-shared-archive',
+            unsubscribe: null,
+            isApplyingRemote: false,
+            lastWrittenSnapshot: ''
+        };
+
+        function resolveCloudConfig() {
+            if (typeof __firebase_config !== 'undefined' && __firebase_config) {
+                return typeof __firebase_config === 'string'
+                    ? JSON.parse(__firebase_config)
+                    : __firebase_config;
+            }
+            try {
+                const savedCfg = localStorage.getItem(STORAGE_KEYS.CLOUD_CONFIG);
+                if (savedCfg) {
+                    return JSON.parse(savedCfg);
+                }
+            } catch (err) {
+                console.warn('تعذر قراءة إعدادات المشروع السحابي المحفوظة:', err);
+            }
+            return null;
+        }
+
+        function setCloudBadgeStatus(text, connected) {
+            const badge = document.getElementById('cloud-connection-badge');
+            if (!badge) return;
+            badge.textContent = text;
+            if (connected) {
+                badge.className = 'text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-forest-900 text-white';
+            } else {
+                badge.className = 'text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-sand-200 text-forest-900';
+            }
+        }
+
+        function getSharedArchiveDocRef() {
+            if (!syncState.db) return null;
+            const roomKey = (appSettings.syncRoom || syncState.roomId || 'our-shared-archive').replace(/[^a-zA-Z0-9_-]/g, '_');
+            return doc(syncState.db, 'artifacts', syncState.appId, 'public', 'data', 'shared_archive', roomKey);
+        }
+
+        async function pushLocalStateToCloud() {
+            if (syncState.isApplyingRemote) return;
+            if (!syncState.user || !syncState.db) return;
+
+            const docRef = getSharedArchiveDocRef();
+            if (!docRef) return;
+
+            const payload = buildCurrentPayload();
+            const comparable = JSON.stringify({
+                settings: payload.settings,
+                memories: payload.memories,
+                home: payload.home,
+                secrets: payload.secrets,
+                watched: payload.watched,
+                ideas: payload.ideas
+            });
+
+            if (comparable === syncState.lastWrittenSnapshot) return;
+            syncState.lastWrittenSnapshot = comparable;
+
+            try {
+                await setDoc(docRef, payload, { merge: true });
+                const footerEl = document.getElementById('sync-status-footer');
+                if (footerEl) {
+                    footerEl.textContent = 'متصل ومزامن لحظياً بين الأجهزة.';
+                }
+            } catch (error) {
+                console.error('خطأ أثناء إرسال التحديث للمزامنة:', error);
+                showToast('تعذر مزامنة التحديث الآن');
+            }
+        }
+
+        // ربط حفظ التخزين المحلي بدفع التحديثات السحابية تلقائياً
+        const originalSaveDataToStorage = window.saveDataToStorage;
+        window.saveDataToStorage = function (key, data) {
+            const saved = typeof originalSaveDataToStorage === 'function'
+                ? originalSaveDataToStorage(key, data)
+                : true;
+            if (saved && !syncState.isApplyingRemote) {
+                pushLocalStateToCloud();
+            }
+            return saved;
+        };
+
+        window.initRealtimeSync = async function () {
+            const roomDisplay = document.getElementById('sync-room-id-display');
+            const footerEl = document.getElementById('sync-status-footer');
+            const roomKey = (appSettings.syncRoom || 'our-shared-archive').replace(/[^a-zA-Z0-9_-]/g, '_');
+            syncState.roomId = roomKey;
+            syncState.lastWrittenSnapshot = '';
+
+            if (typeof syncState.unsubscribe === 'function') {
+                syncState.unsubscribe();
+                syncState.unsubscribe = null;
+            }
+
+            try {
+                const firebaseConfig = resolveCloudConfig();
+                if (!firebaseConfig || !firebaseConfig.projectId) {
+                    setCloudBadgeStatus('وضع محلي', false);
+                    if (roomDisplay) {
+                        roomDisplay.textContent = 'غير متصل بالسحابة — أضف إعدادات المشروع السحابي في نافذة التخصيص لتشغيل التخزين السحابي';
+                    }
+                    if (footerEl) {
+                        footerEl.textContent = 'البيانات محفوظة محلياً حالياً. فعّل إعدادات المشروع السحابي من زر "تخصيص" للمزامنة بين جهازين.';
+                    }
+                    return;
+                }
+
+                if (!syncState.db) {
+                    const app = initializeApp(firebaseConfig);
+                    const auth = getAuth(app);
+                    const db = getFirestore(app);
+
+                    syncState.app = app;
+                    syncState.auth = auth;
+                    syncState.db = db;
+
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        const cred = await signInWithCustomToken(auth, __initial_auth_token);
+                        syncState.user = cred.user;
+                    } else {
+                        const cred = await signInAnonymously(auth);
+                        syncState.user = cred.user;
+                    }
+                }
+
+                if (!syncState.user || !syncState.db) {
+                    setCloudBadgeStatus('بانتظار الدخول', false);
+                    return;
+                }
+
+                setCloudBadgeStatus('متصل سحابياً', true);
+                if (roomDisplay) {
+                    roomDisplay.textContent = `${syncState.appId} / ${roomKey}`;
+                }
+
+                const docRef = getSharedArchiveDocRef();
+                if (!docRef) return;
+
+                syncState.unsubscribe = onSnapshot(
+                    docRef,
+                    (snapshot) => {
+                        setCloudBadgeStatus('متصل سحابياً', true);
+                        if (snapshot.exists()) {
+                            const remoteData = snapshot.data();
+                            const mergedRemoteSettings = {
+                                ...DEFAULT_SETTINGS,
+                                ...(remoteData.settings || {}),
+                                syncRoom: roomKey
+                            };
+                            const remoteComparable = JSON.stringify({
+                                settings: mergedRemoteSettings,
+                                memories: remoteData.memories || [],
+                                home: remoteData.home || [],
+                                secrets: remoteData.secrets || [],
+                                watched: remoteData.watched || [],
+                                ideas: remoteData.ideas || []
+                            });
+
+                            if (remoteComparable !== syncState.lastWrittenSnapshot) {
+                                applyRemotePayload({
+                                    ...remoteData,
+                                    settings: mergedRemoteSettings
+                                });
+                                showToast('تمت مزامنة تحديث سحابي جديد');
+                            }
+                        } else {
+                            // رفع البيانات الحالية لأول مرة عند إنشاء الغرفة المشتركة
+                            pushLocalStateToCloud();
+                        }
+
+                        if (footerEl) {
+                            footerEl.textContent = `التخزين السحابي نشط (الغرفة: ${roomKey}) — أي تغيير يظهر فوراً على الجهاز الآخر.`;
+                        }
+                    },
+                    (error) => {
+                        console.error('خطأ في الاستماع للتحديثات اللحظية:', error);
+                        setCloudBadgeStatus('خطأ اتصال', false);
+                        if (footerEl) {
+                            footerEl.textContent = 'تعذر الاتصال بالتخزين السحابي حالياً. تحقق من إعدادات المشروع وقواعد الوصول.';
+                        }
+                    }
+                );
+            } catch (error) {
+                console.error('فشل تهيئة المزامنة:', error);
+                setCloudBadgeStatus('خطأ إعداد', false);
+                if (roomDisplay) roomDisplay.textContent = 'تعذر تهيئة التخزين السحابي، تأكد من صحة بيانات المشروع';
+            }
+        };
+    </script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        window.initializeApp = initializeApp;
+        window.getAuth = getAuth;
+        window.signInAnonymously = signInAnonymously;
+        window.signInWithCustomToken = signInWithCustomToken;
+        window.getFirestore = getFirestore;
+        window.doc = doc;
+        window.setDoc = setDoc;
+        window.onSnapshot = onSnapshot;
+
+        if (typeof window.initRealtimeSync === 'function') {
+            window.initRealtimeSync();
+        }
+    </script>
+
+    <script>
+        function initializeArchiveApp() {
+            loadDataFromStorage();
+            applySettingsToUI();
+            startLiveTimer();
+            renderEmojiSelector('❤️');
+            renderMemories();
+            renderHome();
+            renderSecrets();
+            renderWatched();
+            renderIdeas();
+            updateSectionCounters();
+            selectChapter(activeChapterKey);
+            safeCreateIcons();
+
+            const confirmBtn = document.getElementById('confirm-delete-btn');
+            if (confirmBtn) {
+                confirmBtn.addEventListener('click', function () {
+                    if (typeof pendingDeleteAction === 'function') {
+                        pendingDeleteAction();
+                    }
+                    closeConfirmModal();
+                });
+            }
+
+            if (typeof window.initRealtimeSync === 'function') {
+                window.initRealtimeSync();
+            }
+        }
+
+        function openConfirmModal(message, onConfirm) {
+            const modal = document.getElementById('confirm-modal');
+            const msgEl = document.getElementById('confirm-modal-message');
+            if (!modal || !msgEl) return;
+            msgEl.textContent = message || 'هل أنت متأكد من الحذف؟';
+            pendingDeleteAction = onConfirm;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            safeCreateIcons();
+        }
+
+        function closeConfirmModal() {
+            const modal = document.getElementById('confirm-modal');
+            if (!modal) return;
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            pendingDeleteAction = null;
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeArchiveApp);
+        } else {
+            initializeArchiveApp();
+        }
+    </script>
+</body>
+</html>
